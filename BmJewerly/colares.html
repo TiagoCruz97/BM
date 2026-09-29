@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colares | BM Jewerly</title>
+<meta name="description" content="Descobre a nossa coleção de colares em aço inoxidável dourado. Portes grátis em Portugal acima de 30€.">
+<style>
+  :root{
+    --ivory:#FBF3E8; --ivory-deep:#F2E4CE; --card:#FFFEFA;
+    --ink:#241F1A; --ink-soft:#55493C; --ink-faint:#8C8172;
+    --gold:#BA9463; --gold-deep:#8A6A3A; --gold-light:#E4C99A;
+    --rose:#B5677A; --rose-light:#E7BEC9; --emerald:#33493B;
+    --border:rgba(36,31,26,.1); --shadow:0 20px 40px -20px rgba(36,31,26,.28);
+    --shadow-sm:0 8px 20px -12px rgba(36,31,26,.22);
+    --radius-lg:28px; --radius-md:18px;
+    --font-display: Georgia, serif; --font-body: Arial, sans-serif;
+  }
+  *,*::before,*::after{ box-sizing:border-box; } html{ scroll-behavior:smooth; }
+  body{ margin:0; background:var(--ivory); color:var(--ink); font-family:var(--font-body); -webkit-font-smoothing:antialiased; }
+  body.no-scroll{ overflow:hidden; } img,svg{ display:block; max-width:100%; }
+  button{ font:inherit; } a{ color:inherit; text-decoration:none; } ul{ margin:0; padding:0; } h1,h2,h3,p{ margin:0; }
+  a:focus-visible, button:focus-visible, input:focus-visible{ outline:2px solid var(--gold-deep); outline-offset:3px; }
+  .container{ max-width:1180px; margin:0 auto; padding:0 24px; }
+  .site-header{ position:sticky; top:0; z-index:60; background:rgba(251,243,232,.95); border-bottom:1px solid var(--border); }
+  .header-inner{ display:flex; align-items:center; justify-content:space-between; max-width:1180px; margin:0 auto; padding:16px 24px; }
+  .logo{ display:flex; align-items:baseline; gap:6px; }
+  .logo-mark{ font-family:var(--font-display); font-weight:700; font-size:1.6rem; color:var(--gold-deep); }
+  .logo-word{ font-weight:500; font-size:1.02rem; letter-spacing:.24em; }
+  .main-nav{ display:flex; gap:26px; }
+  .main-nav a{ font-size:.86rem; color:var(--ink-soft); position:relative; padding-bottom:4px; }
+  .main-nav a.active{ color:var(--gold-deep); font-weight:bold; }
+  .header-actions{ display:flex; gap:12px; }
+  .btn{ font-size:.86rem; font-weight:bold; padding:10px 24px; border-radius:999px; cursor:pointer; border:1px solid transparent; transition:all .2s; }
+  .btn-outline{ background:transparent; border-color:var(--ink); color:var(--ink); }
+  .btn-outline:hover{ background:var(--ink); color:var(--ivory); }
+  .btn-primary{ background:var(--gold-deep); color:var(--ivory); }
+  .btn-primary:hover{ background:var(--ink); border-color:var(--ink); }
+
+  .category-header{ padding:60px 0; text-align:center; }
+  .category-header h1{ font-family:var(--font-display); font-size:3rem; margin-bottom:12px; }
+  .product-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:24px; padding-bottom:80px;}
+  .product-card{ background:var(--card); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border); transition: transform .3s ease, box-shadow .3s ease; }
+  .product-card:hover{ transform: translateY(-4px); box-shadow: var(--shadow-sm); }
+  .product-gallery{ width:100%; aspect-ratio:1/1; border-radius:12px; background:#f0f0f0; overflow:hidden; position:relative; margin-bottom:16px; }
+  .product-gallery img{ width:100%; height:100%; object-fit:cover; }
+  
+  .gallery-nav{ position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.9); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink); font-size: 1.2rem; opacity: 0; transition: opacity 0.2s ease, background 0.2s ease; }
+  .gallery-nav:hover{ background: white; color: var(--gold-deep); }
+  .gallery-nav.prev{ left: 8px; } .gallery-nav.next{ right: 8px; }
+  .product-card:hover .gallery-nav{ opacity: 1; }
+
+  .product-title{ font-size:1.1rem; margin:8px 0; text-align:center; }
+  .product-price{ font-family:var(--font-display); font-size:1.3rem; color:var(--gold-deep); font-weight:bold; margin-bottom:16px; text-align:center;}
+  .qty-wrapper{ display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border); border-radius:999px; padding:4px 8px; margin-bottom:12px; }
+  .qty-btn{ background:none; border:none; font-size:1.2rem; cursor:pointer; width:24px; transition: background 0.2s; border-radius: 50%; height: 24px; display: flex; align-items: center; justify-content: center; }
+  .qty-btn:hover{ background: rgba(0,0,0,0.05); color: var(--ink); }
+  
+  /* ESCONDER SETAS DOS INPUTS */
+  .qty-input{ width: 40px; border: none; background: transparent; text-align: center; font-family: var(--font-body); font-size: 0.95rem; color: var(--ink); font-weight: 500; -moz-appearance: textfield; appearance: none; }
+  .qty-input::-webkit-outer-spin-button, .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* REMOVIDO O GRID PARA O BOTÃO FICAR SOZINHO A OCUPAR O ESPAÇO TODO */
+  .action-buttons{ display: block; }
+  .action-buttons .btn{ width: 100%; padding: 12px; font-size: 0.9rem; }
+
+  /* Carrinho & Modals UI */
+  .toast{ position:fixed; bottom:20px; left:50%; transform:translate(-50%, 20px); background:var(--ink); color:var(--ivory); padding:12px 24px; border-radius:999px; opacity:0; transition:all .3s; z-index:1000; }
+  .toast.is-visible{ opacity:1; transform:translate(-50%, 0); }
+  .modal-overlay{ position:fixed; inset:0; background:rgba(36,31,26,.55); z-index:80; display:none; opacity:0; transition:opacity .25s ease; }
+  .modal-overlay.is-open{ display:block; } .modal-overlay.is-visible{ opacity:1; }
+  .modal{ position:fixed; inset:0; z-index:90; display:none; align-items:center; justify-content:center; padding:20px; }
+  .modal.is-open{ display:flex; }
+  .modal-card{ background:var(--card); border-radius:var(--radius-lg); max-width:480px; width:100%; max-height:86vh; overflow-y:auto; padding:40px 36px; position:relative; box-shadow:var(--shadow); opacity:0; transform:translateY(16px) scale(.98); transition:opacity .3s ease, transform .3s ease; }
+  .modal.is-visible .modal-card{ opacity:1; transform:translateY(0) scale(1); }
+  .modal-close{ position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; border:1px solid var(--border); background:none; font-size:1.3rem; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .modal-title{ font-family:var(--font-display); font-size:1.7rem; color:var(--ink); margin-bottom:18px; }
+  .modal-body{ color:var(--ink-soft); font-size:.95rem; line-height:1.7; }
+  
+  .site-footer{ background:var(--ink); color:var(--ivory); padding:56px 0 28px; }
+  .footer-inner{ display:flex; flex-direction:column; align-items:center; gap:18px; text-align:center; }
+  .footer-logo{ font-family:var(--font-display); font-size:1.3rem; letter-spacing:.1em; }
+  .footer-copy{ color:rgba(251,243,232,.45); font-size:.78rem; margin-top:6px; }
+  
+  .cart-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:100; opacity:0; pointer-events:none; transition:opacity .3s; }
+  .cart-overlay.is-active{ opacity:1; pointer-events:all; }
+  .cart-sidebar{ position:fixed; top:0; right:0; bottom:0; width:100%; max-width:400px; background:var(--card); z-index:110; display:flex; flex-direction:column; transform:translateX(100%); transition:transform .4s; }
+  .cart-sidebar.is-active{ transform:translateX(0); }
+  .cart-header{ padding:20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; }
+  .cart-header h2{ font-family:var(--font-display); margin:0; }
+  .close-cart{ background:none; border:none; font-size:1.5rem; cursor:pointer; }
+  .cart-items-container{ flex-grow:1; overflow-y:auto; padding:20px; }
+  .cart-item{ display:flex; gap:16px; margin-bottom:20px; }
+  .cart-item img{ width:60px; height:60px; object-fit:cover; border-radius:8px; }
+  .cart-item-info{ flex-grow:1; }
+  .cart-item-title{ font-weight:bold; margin-bottom:4px; font-size:0.95rem; }
+  .cart-item-price{ color:var(--gold-deep); font-size:0.9rem; font-weight:600; }
+  .cart-item-qty{ font-size:0.85rem; color:var(--ink-faint); margin-top:4px; }
+  .cart-qty-controls{ display:flex; align-items:center; gap:8px; margin-top:8px; }
+  .cart-qty-btn{ width:26px; height:26px; border:1px solid var(--border); border-radius:50%; background:transparent; cursor:pointer; }
+  .cart-qty-value{ min-width:20px; text-align:center; font-size:.9rem; }
+  .remove-item{ background:none; border:none; color:var(--rose-deep); text-decoration:underline; cursor:pointer; padding:0; font-size:0.8rem; margin-top:4px; }
+  .cart-footer{ padding:20px; border-top:1px solid var(--border); background:var(--ivory-deep); }
+  .cart-total-row{ display:flex; justify-content:space-between; font-weight:bold; font-size:1.2rem; margin-bottom:16px; }
+</style>
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<div class="collection-notice" role="status">Nova coleção em breve · Mantenha-se atenta.</div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark">BM</span><span class="logo-word">JEWERLY</span>
+    </a>
+    <nav class="main-nav">
+      <a href="colares.html" class="active">Colares</a>
+      <a href="brincos.html">Brincos</a>
+      <a href="pulseiras.html">Pulseiras</a>
+      <a href="aneis.html">Anéis</a>
+      <a href="conjuntos.html">Conjuntos</a>
+      <a href="homem.html">Homem</a>
+    </nav>
+    <div class="header-actions">
+      <button class="btn btn-primary" id="cartBtn">🛒 Carrinho (0)</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="category-header">
+    <h1>Colares</h1>
+    <p>A elegância encontra a durabilidade. Não escurece, não desbota.</p>
+  </div>
+  
+  <div class="product-grid">
+    <!-- Produto 1 -->
+    <article class="product-card" data-images='["Site/Colar/Colar malha torcida/IMG_8131.jpg", "Site/Colar/Colar malha torcida/IMG_8132.jpg", "Site/Colar/Colar malha torcida/IMG_8133.jpg"]'>
+      <div class="product-gallery">
+        <img src="Site/Colar/Colar malha torcida/IMG_8131.jpg" alt="Colar de malha torcida dourada" class="main-img">
+      </div>
+      <div class="product-info">
+        <h3 class="product-title">Colar Malha Torcida</h3>
+        <p class="product-details">Aço inoxidável · 40 cm + extensão de 5 cm · 3 mm</p>
+        <p class="product-price">24,95€</p>
+        <div class="qty-wrapper">
+          <button class="qty-btn minus">−</button>
+          <input type="number" class="qty-input" value="1" min="1">
+          <button class="qty-btn plus">+</button>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn-primary add-cart">Adicionar ao Carrinho</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- Produto 2 -->
+    <article class="product-card" data-images='["Site/Colar/Colar género terço/IMG_8107.jpg", "Site/Colar/Colar género terço/IMG_8108.jpg", "Site/Colar/Colar género terço/IMG_8109.jpg"]'>
+      <div class="product-gallery">
+        <img src="Site/Colar/Colar género terço/IMG_8107.jpg" alt="Colar dourado estilo terço com cruz" class="main-img">
+      </div>
+      <div class="product-info">
+        <h3 class="product-title">Colar Género Terço</h3>
+        <p class="product-details">Aço inoxidável · 40 cm + extensão de 5 cm · medalha 18 × 23 mm · cruz 32 mm</p>
+        <p class="product-price">19,95€</p>
+        <div class="qty-wrapper">
+          <button class="qty-btn minus">−</button>
+          <input type="number" class="qty-input" value="1" min="1">
+          <button class="qty-btn plus">+</button>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn-primary add-cart">Adicionar ao Carrinho</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- Produto 3 -->
+    <article class="product-card" data-images='["Site/Colar/colar estilo português/IMG_8209.jpg", "Site/Colar/colar estilo português/IMG_8209 2.jpg", "Site/Colar/colar estilo português/IMG_8208.jpg"]'>
+      <div class="product-gallery">
+        <img src="Site/Colar/colar estilo português/IMG_8209.jpg" alt="Colar dourado estilo português" class="main-img">
+      </div>
+      <div class="product-info">
+        <h3 class="product-title">Colar Estilo Português</h3>
+        <p class="product-details">Aço inoxidável · 45 cm + extensão de 5 cm · pendente 23,5 × 14,5 mm</p>
+        <p class="product-price">29,95€</p>
+        <div class="qty-wrapper">
+          <button class="qty-btn minus">−</button>
+          <input type="number" class="qty-input" value="1" min="1">
+          <button class="qty-btn plus">+</button>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn-primary add-cart">Adicionar ao Carrinho</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- Produto 4 -->
+    <article class="product-card" data-images='["Site/Colar/colar geométrico/IMG_8291.jpg", "Site/Colar/colar geométrico/IMG_8291 2.jpg", "Site/Colar/colar geométrico/IMG_8293.jpg"]'>
+      <div class="product-gallery">
+        <img src="Site/Colar/colar geométrico/IMG_8291.jpg" alt="Colar dourado com pendente oval geométrico" class="main-img">
+      </div>
+      <div class="product-info">
+        <h3 class="product-title">Colar Geométrico Oval</h3>
+        <p class="product-details">Aço inoxidável · 45 cm + extensão de 5 cm · pendente 1,13 × 0,5 cm</p>
+        <p class="product-price">18,90€</p>
+        <div class="qty-wrapper">
+          <button class="qty-btn minus">−</button>
+          <input type="number" class="qty-input" value="1" min="1">
+          <button class="qty-btn plus">+</button>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn-primary add-cart">Adicionar ao Carrinho</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="product-card is-consultation" data-images='["Site/Colar/colar sardinha /IMG_8267.jpg", "Site/Colar/colar sardinha /IMG_8268.jpg", "Site/Colar/colar sardinha /IMG_8268 2.jpg"]'>
+      <div class="product-gallery">
+        <img src="Site/Colar/colar sardinha /IMG_8267.jpg" alt="Colar dourado com pendente de sardinha" class="main-img">
+        <button class="gallery-nav prev" aria-label="Imagem anterior">‹</button>
+        <button class="gallery-nav next" aria-label="Imagem seguinte">›</button>
+      </div>
+      <div class="product-info">
+        <h3 class="product-title">Colar Sardinha</h3>
+        <p class="product-details">Aço inoxidável · 45 cm + extensão de 5 cm · pendente 25,6 × 6 mm</p>
+        <p class="product-price">Preço sob consulta</p>
+        <div class="action-buttons"><a class="btn btn-primary" href="index.html#contactos">Consultar disponibilidade</a></div>
+      </div>
+    </article>
+
+    <article class="product-card is-consultation" data-images='["Site/Colar/Colar simples bolinhas/IMG_7269.jpg", "Site/Colar/Colar simples bolinhas/IMG_7270.jpg", "Site/Colar/Colar simples bolinhas/ChatGPT Image 24_09_2026, 14_51_37.png"]'>
+      <div class="product-gallery">
+        <img src="Site/Colar/Colar simples bolinhas/IMG_7269.jpg" alt="Colar dourado simples com pequenas bolas" class="main-img">
+        <button class="gallery-nav prev" aria-label="Imagem anterior">‹</button>
+        <button class="gallery-nav next" aria-label="Imagem seguinte">›</button>
+      </div>
+      <div class="product-info">
+        <h3 class="product-title">Colar Simples com Bolinhas</h3>
+        <p class="product-details">Aço inoxidável · 40 cm + extensão de 5 cm</p>
+        <p class="product-price">Preço sob consulta</p>
+        <div class="action-buttons"><a class="btn btn-primary" href="index.html#contactos">Consultar disponibilidade</a></div>
+      </div>
+    </article>
+
+    <article class="product-card is-consultation" data-images='["Site/Colar/colar pérolas brancas/IMG_8342.jpg", "Site/Colar/colar pérolas brancas/IMG_8343.jpg", "Site/Colar/colar pérolas brancas/ChatGPT Image 24_09_2026, 14_58_45.png"]'>
+      <div class="product-gallery">
+        <img src="Site/Colar/colar pérolas brancas/IMG_8342.jpg" alt="Colar dourado com pérolas brancas" class="main-img">
+        <button class="gallery-nav prev" aria-label="Imagem anterior">‹</button>
+        <button class="gallery-nav next" aria-label="Imagem seguinte">›</button>
+      </div>
+      <div class="product-info">
+        <h3 class="product-title">Colar de Pérolas Brancas</h3>
+        <p class="product-details">Aço inoxidável e pérolas ABS · 40 cm + extensão de 5 cm</p>
+        <p class="product-price">Preço sob consulta</p>
+        <div class="action-buttons"><a class="btn btn-primary" href="index.html#contactos">Consultar disponibilidade</a></div>
+      </div>
+    </article>
+
+    <article class="product-card is-consultation" data-images='["Site/Colar/colar nossa senhora/IMG_7047.jpg", "Site/Colar/colar nossa senhora/IMG_7047 2.jpg", "Site/Colar/colar nossa senhora/IMG_6672 2.jpg"]'>
+      <div class="product-gallery">
+        <img src="Site/Colar/colar nossa senhora/IMG_7047.jpg" alt="Colar dourado com medalha de Nossa Senhora" class="main-img">
+        <button class="gallery-nav prev" aria-label="Imagem anterior">‹</button>
+        <button class="gallery-nav next" aria-label="Imagem seguinte">›</button>
+      </div>
+      <div class="product-info">
+        <h3 class="product-title">Colar Nossa Senhora</h3>
+        <p class="product-details">Aço inoxidável · 45 cm + extensão de 5 cm · pendente 23 × 14,5 mm</p>
+        <p class="product-price">Preço sob consulta</p>
+        <div class="action-buttons"><a class="btn btn-primary" href="index.html#contactos">Consultar disponibilidade</a></div>
+      </div>
+    </article>
+  </div>
+</main>
+
+<footer class="site-footer" style="margin-top: 80px;">
+  <div class="container footer-inner">
+    <p class="footer-logo">BM JEWERLY</p>
+    <nav class="footer-links" aria-label="Informações da loja">
+      <a href="index.html#contactos">Contactos</a>
+      <a href="index.html#quem-somos">Quem Somos</a>
+      <a href="index.html#envios-e-devolucoes">Envios e Devoluções</a>
+      <a href="index.html#perguntas-frequentes">Perguntas Frequentes</a>
+    </nav>
+    <p class="footer-copy">© 2026 BM Jewerly. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- HTML DO CARRINHO -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h2>O teu carrinho</h2>
+    <button class="close-cart" id="closeCartBtn">×</button>
+  </div>
+  <div class="cart-items-container" id="cartItemsList"></div>
+  <div class="cart-footer">
+    <div class="cart-total-row"><span>Total:</span><span id="cartTotalValue">0,00€</span></div>
+    <a href="compra.html" class="btn btn-primary" style="width:100%; text-align:center; display:block;">Finalizar Compra</a>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+  // Lógica Principal do Carrinho 
+  const cartBtn = document.getElementById('cartBtn');
+  const cartOverlay = document.getElementById('cartOverlay');
+  const cartSidebar = document.getElementById('cartSidebar');
+  const closeCartBtn = document.getElementById('closeCartBtn');
+  const cartItemsList = document.getElementById('cartItemsList');
+  const cartTotalValue = document.getElementById('cartTotalValue');
+  const toastEl = document.getElementById('toast');
+  
+  let cart = [];
+  try {
+    const stored = localStorage.getItem('bm_jewerly_cart_final');
+    cart = stored ? JSON.parse(stored) : [];
+    if (!Array.isArray(cart)) cart = [];
+  } catch (e) {
+    cart = [];
+  }
+
+  function updateCart() {
+    const totalQty = cart.reduce((sum, item) => sum + (parseInt(item.qty) || 0), 0);
+    if(cartBtn) cartBtn.innerText = `🛒 Carrinho (${totalQty})`;
+    localStorage.setItem('bm_jewerly_cart_final', JSON.stringify(cart));
+    renderCartSidebar();
+  }
+
+  function renderCartSidebar() {
+    if(!cartItemsList) return;
+    cartItemsList.innerHTML = ''; 
+    let totalPrice = 0;
+    if (cart.length === 0) {
+      cartItemsList.innerHTML = '<p class="empty-cart-msg" style="text-align:center; color:gray; margin-top:40px;">O teu carrinho está vazio.</p>';
+      if(cartTotalValue) cartTotalValue.innerText = '0,00€';
+      return;
+    }
+    cart.forEach((item, index) => {
+      totalPrice += item.price * item.qty;
+      const itemEl = document.createElement('div');
+      itemEl.className = 'cart-item';
+      itemEl.innerHTML = `
+        <img src="${item.img}" alt="${item.title}" class="cart-item-img">
+        <div class="cart-item-info">
+          <div class="cart-item-title">${item.title}</div>
+          <div class="cart-item-price">${item.price.toFixed(2).replace('.', ',')}€</div>
+          <div class="cart-qty-controls">
+            <button class="cart-qty-btn cart-qty-minus" data-index="${index}" aria-label="Diminuir quantidade">−</button>
+            <span class="cart-qty-value">${item.qty}</span>
+            <button class="cart-qty-btn cart-qty-plus" data-index="${index}" aria-label="Aumentar quantidade">+</button>
+          </div>
+          <button class="remove-item" data-index="${index}">Remover</button>
+        </div>
+      `;
+      cartItemsList.appendChild(itemEl);
+    });
+    if(cartTotalValue) cartTotalValue.innerText = `${totalPrice.toFixed(2).replace('.', ',')}€`;
+    document.querySelectorAll('.remove-item').forEach(btn => {
+      btn.addEventListener('click', function() { cart.splice(this.getAttribute('data-index'), 1); updateCart(); });
+    });
+    document.querySelectorAll('.cart-qty-minus, .cart-qty-plus').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const idx = Number(this.getAttribute('data-index'));
+        const change = this.classList.contains('cart-qty-plus') ? 1 : -1;
+        cart[idx].qty = Math.max(1, (parseInt(cart[idx].qty) || 1) + change);
+        updateCart();
+      });
+    });
+  }
+
+  function addProductToCart(title, priceStr, img, qty) {
+    try {
+      const cleanPrice = priceStr.replace(/[^\d,.-]/g, '').replace(',', '.');
+      const priceNum = parseFloat(cleanPrice) || 0;
+      const parsedQty = parseInt(qty) || 1;
+      
+      const existing = cart.find(i => i.title === title);
+      if (existing) existing.qty += parsedQty; else cart.push({ title: title, price: priceNum, img: img, qty: parsedQty }); 
+      updateCart();
+    } catch(e) { console.error(e); }
+  }
+
+  function showToast(msg) {
+    if(!toastEl) return;
+    toastEl.textContent = msg; toastEl.classList.add('is-visible');
+    setTimeout(() => toastEl.classList.remove('is-visible'), 3000);
+  }
+
+  if(cartBtn) cartBtn.addEventListener('click', (e) => { e.preventDefault(); if(cartOverlay) cartOverlay.classList.add('is-active'); if(cartSidebar) cartSidebar.classList.add('is-active'); document.body.classList.add('no-scroll');});
+  const closeFn = () => { if(cartOverlay) cartOverlay.classList.remove('is-active'); if(cartSidebar) cartSidebar.classList.remove('is-active'); document.body.classList.remove('no-scroll');};
+  if(closeCartBtn) closeCartBtn.addEventListener('click', closeFn);
+  if(cartOverlay) cartOverlay.addEventListener('click', closeFn);
+
+  updateCart();
+
+  // Ações dos Produtos Blindadas (Não crascha se faltar informação)
+  document.querySelectorAll('.product-card').forEach(card => {
+    const qtyInput = card.querySelector('.qty-input');
+    const minusBtn = card.querySelector('.minus');
+    const plusBtn = card.querySelector('.plus');
+    const imgEl = card.querySelector('.main-img');
+    const titleEl = card.querySelector('.product-title');
+    const priceEl = card.querySelector('.product-price');
+    const addBtn = card.querySelector('.add-cart');
+
+    if(minusBtn && qtyInput) minusBtn.addEventListener('click', () => { let v = parseInt(qtyInput.value); if(v>1) qtyInput.value = v-1; });
+    if(plusBtn && qtyInput) plusBtn.addEventListener('click', () => { qtyInput.value = parseInt(qtyInput.value)+1; });
+    if(qtyInput) qtyInput.addEventListener('change', () => { if (qtyInput.value < 1 || isNaN(qtyInput.value)) qtyInput.value = 1; });
+
+    if(addBtn && titleEl && priceEl) {
+      addBtn.addEventListener('click', () => {
+        const qty = qtyInput ? parseInt(qtyInput.value) : 1;
+        addProductToCart(titleEl.innerText, priceEl.innerText, imgEl ? imgEl.src : '', qty);
+        showToast(`${qty}x ${titleEl.innerText} adicionado!`);
+        if(cartOverlay) cartOverlay.classList.add('is-active'); 
+        if(cartSidebar) cartSidebar.classList.add('is-active'); 
+        document.body.classList.add('no-scroll');
+      });
+    }
+
+    const prevBtn = card.querySelector('.prev');
+    const nextBtn = card.querySelector('.next');
+    const images = JSON.parse(card.getAttribute('data-images') || '[]');
+    let currentImgIndex = 0;
+
+    if (images.length > 1) {
+      if(prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); currentImgIndex = (currentImgIndex > 0) ? currentImgIndex - 1 : images.length - 1; if(imgEl) imgEl.src = images[currentImgIndex]; });
+      if(nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); currentImgIndex = (currentImgIndex < images.length - 1) ? currentImgIndex + 1 : 0; if(imgEl) imgEl.src = images[currentImgIndex]; });
+    }
+  });
+});
+</script>
+</body>
+</html>
