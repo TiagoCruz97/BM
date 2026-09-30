@@ -56,11 +56,31 @@
       state.textContent = order.status === 'accepted' ? 'Aceite' : order.status === 'rejected' ? 'Recusado' : 'Pendente';
       heading.append(title, state);
 
-      const meta = document.createElement('p');
-      meta.className = 'order-meta';
       const customer = order.customer || {};
       const date = new Date(order.createdAt).toLocaleString('pt-PT');
-      meta.textContent = `${customer.name || 'Cliente'} · ${customer.email || ''} · ${customer.phone || ''}\n${customer.address || ''}, ${customer.postal || ''} ${customer.city || ''} · ${customer.country || ''}\nPagamento: ${customer.payment || ''} · ${date}`;
+      const details = document.createElement('div');
+      details.className = 'order-details';
+      const addDetail = (label, value) => {
+        const section = document.createElement('div');
+        section.className = 'order-detail';
+        const heading = document.createElement('h4');
+        heading.textContent = label;
+        const text = document.createElement('p');
+        text.textContent = value || '—';
+        section.append(heading, text);
+        details.append(section);
+      };
+      const address = [customer.address, [customer.postal, customer.city].filter(Boolean).join(' '), customer.country]
+        .filter(Boolean)
+        .join(', ');
+      addDetail('Cliente', customer.name || 'Cliente');
+      addDetail('Contacto', [customer.email, customer.phone].filter(Boolean).join(' · '));
+      addDetail('Entrega', address);
+      addDetail('Pagamento e data', `${customer.payment || '—'} · ${date}`);
+
+      const itemsHeading = document.createElement('h4');
+      itemsHeading.className = 'order-section-title';
+      itemsHeading.textContent = 'Artigos';
 
       const lines = document.createElement('ul');
       lines.className = 'order-lines';
@@ -69,10 +89,16 @@
         line.textContent = `${item.title} × ${item.qty} · ${(item.price * item.qty).toFixed(2).replace('.', ',')}€`;
         lines.append(line);
       });
-      const total = document.createElement('p');
-      total.className = 'order-meta';
-      total.textContent = `Total: ${Number(order.total || 0).toFixed(2).replace('.', ',')}€ (portes: ${Number(order.shipping || 0).toFixed(2).replace('.', ',')}€)`;
-      card.append(heading, meta, lines, total);
+      const total = document.createElement('div');
+      total.className = 'order-total';
+      const totalLabel = document.createElement('span');
+      totalLabel.textContent = 'Total da encomenda';
+      const totalValue = document.createElement('strong');
+      totalValue.textContent = `${Number(order.total || 0).toFixed(2).replace('.', ',')}€`;
+      const shipping = document.createElement('small');
+      shipping.textContent = `Portes: ${Number(order.shipping || 0).toFixed(2).replace('.', ',')}€`;
+      total.append(totalLabel, totalValue, shipping);
+      card.append(heading, details, itemsHeading, lines, total);
 
       if (order.status === 'pending') {
         const actions = document.createElement('div');

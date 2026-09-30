@@ -36,8 +36,8 @@
 				</div>
 				<h2>Forma de pagamento</h2>
 				<div class="payment-options">
-					<label class="payment-option"><input type="radio" name="payment" value="Transferência Bancária" required><span><strong>Transferência Bancária</strong><small>Receberás os dados bancários após finalizar.</small></span></label>
-					<label class="payment-option"><input type="radio" name="payment" value="MBWay" required><span><strong>MBWay</strong><small>Indica o número de telefone associado ao MBWay.</small></span></label>
+					<label class="payment-option"><input type="radio" name="payment" value="Transferência Bancária" required><span><strong>Transferência Bancária</strong></span></label>
+					<label class="payment-option"><input type="radio" name="payment" value="MBWay" required><span><strong>MBWay</strong></span></label>
 				</div>
 				<button class="submit-btn" type="submit">Finalizar compra</button>
 			</form>
@@ -46,9 +46,9 @@
 			<h2 class="summary-title">Resumo da encomenda</h2>
 			<div id="summaryItems"></div>
 			<div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">0,00€</span></div>
-			<div class="summary-row"><span>Portes de envio</span><span id="summaryShipping">A confirmar pela equipa</span></div>
-			<p class="shipping-note" id="shippingNote" aria-live="polite">Os custos de envio são confirmados pela equipa após a encomenda.</p>
-			<div class="summary-total"><span>Total após confirmação dos portes</span><span id="summaryTotal">A confirmar pela equipa</span></div>
+			<div class="summary-row"><span>Portes de envio</span><span id="summaryShipping">—</span></div>
+			<p class="shipping-note" id="shippingNote" aria-live="polite"></p>
+			<div class="summary-total"><span>Total</span><span id="summaryTotal">—</span></div>
 		</aside>
 	</div>
 </main>
@@ -94,7 +94,7 @@ function renderSummary(){
 	if(!cart.length){
 		items.innerHTML='<p class="empty-message">O teu carrinho está vazio. Volta à loja para escolher os teus produtos.</p>';
 		shippingElement.textContent='—';
-		shippingNote.textContent='Indica o país e o código postal para calcular os portes.';
+		shippingNote.textContent='';
 		total.textContent=formatPrice(0);
 		submitButton.disabled=true;
 		return;
@@ -103,14 +103,14 @@ function renderSummary(){
 	const shipping=getShipping();
 	if(!shipping){
 		shippingElement.textContent='—';
-		shippingNote.textContent=countryInput.value==='PT'&&postal?'Indica um código postal português válido (ex.: 1000-001).':'Indica o país e o código postal para calcular os portes.';
+		shippingNote.textContent=countryInput.value==='PT'&&postal?'Indica um código postal português válido (ex.: 1000-001).':'';
 		total.textContent='—';
 		submitButton.disabled=true;
 		return;
 	}
-		shippingElement.textContent='A confirmar pela equipa';
-		shippingNote.textContent=`${shipping.note} Os custos de envio são confirmados pela equipa.`;
-		total.textContent='A confirmar pela equipa';
+		shippingElement.textContent=shipping.price===0?'Grátis':formatPrice(shipping.price);
+		shippingNote.textContent='';
+		total.textContent=formatPrice(subtotal+shipping.price);
 	submitButton.disabled=false;
 }
 countryInput.addEventListener('change',renderSummary);

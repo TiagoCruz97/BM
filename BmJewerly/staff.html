@@ -40,11 +40,18 @@
     .stock-save { white-space:nowrap; }
     .stock-state, .order-state { display:inline-block; color:var(--staff-muted); font-size:.84rem; }
     .order-list { display:grid; gap:14px; }
-    .order-card { border:1px solid var(--staff-line); border-radius:6px; padding:18px; }
+    .order-card { display:grid; gap:14px; border:1px solid var(--staff-line); border-radius:6px; padding:18px; }
     .order-heading { display:flex; justify-content:space-between; gap:12px; align-items:start; }
     .order-heading h3 { margin:0; font-size:1rem; }
-    .order-meta, .order-lines { color:var(--staff-muted); font-size:.9rem; line-height:1.6; }
-    .order-lines { padding-left:18px; }
+    .order-details { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 24px; padding:14px 0; border-top:1px solid var(--staff-line); border-bottom:1px solid var(--staff-line); }
+    .order-detail h4, .order-section-title { margin:0; color:var(--staff-muted); font-size:.78rem; font-weight:600; text-transform:uppercase; }
+    .order-detail p { margin:4px 0 0; font-size:.92rem; line-height:1.45; overflow-wrap:anywhere; }
+    .order-section-title { margin-bottom:-8px; color:var(--staff-ink); }
+    .order-lines { margin:0; padding-left:20px; color:var(--staff-muted); font-size:.92rem; line-height:1.6; }
+    .order-total { display:flex; align-items:baseline; justify-content:flex-end; gap:10px; padding-top:10px; border-top:1px solid var(--staff-line); }
+    .order-total > span { margin-right:auto; color:var(--staff-muted); font-size:.9rem; }
+    .order-total strong { font-size:1.05rem; }
+    .order-total small { color:var(--staff-muted); }
     .order-actions { display:flex; gap:8px; margin-top:14px; }
     .order-empty { padding:32px 0; color:var(--staff-muted); text-align:center; }
     .staff-note { margin:18px 0 0; color:var(--staff-muted); font-size:.82rem; }
@@ -55,6 +62,8 @@
       .staff-toolbar { align-items:flex-start; }
       .staff-toolbar h1 { font-size:1.55rem; }
       .staff-table th, .staff-table td { padding:10px 8px; }
+      .order-details { grid-template-columns:1fr; gap:10px; }
+      .order-total { flex-wrap:wrap; }
     }
   </style>
 </head>
