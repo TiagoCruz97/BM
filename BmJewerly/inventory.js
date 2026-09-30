@@ -51,10 +51,17 @@
     const available = cart.filter(item => {
       const stock = getStock(item.title);
       return stock === null || stock > 0;
+    }).map(item => {
+      item = { ...item };
+      const stock = getStock(item.title);
+      if (stock !== null) item.qty = Math.min(Number(item.qty) || 1, stock);
+      return item;
     });
     if (JSON.stringify(cart) !== JSON.stringify(available)) {
       localStorage.setItem(cartKey, JSON.stringify(available));
     }
+    window.dispatchEvent(new CustomEvent('bm-cart-synchronized'));
+    return available;
   }
 
   function renderCartStockNotes() {
@@ -63,22 +70,41 @@
       container.querySelectorAll('.cart-item').forEach((row, index) => {
         const item = cart[index];
         const stock = item ? getStock(item.title) : null;
+        const quantity = item ? Number(item.qty) || 0 : 0;
+        const quantityValue = row.querySelector('.cart-qty-value');
+        const quantityText = row.querySelector('.cart-item-qty');
+
+        if (quantityValue && quantityValue.textContent !== String(quantity)) quantityValue.textContent = quantity;
+        if (quantityText && quantityText.textContent !== `Qtd: ${quantity}`) quantityText.textContent = `Qtd: ${quantity}`;
+
         let note = row.querySelector('.cart-stock-note');
-        if (item && stock !== null && stock > 0 && Number(item.qty) > stock) {
+        if (item && stock !== null && stock > 0 && quantity >= stock) {
           if (!note) {
             note = document.createElement('p');
             note.className = 'cart-stock-note';
             const info = row.querySelector('.cart-item-info');
-            const quantity = info?.querySelector('.cart-qty-controls, .cart-item-qty');
-            if (quantity) quantity.insertAdjacentElement('afterend', note);
+            const controls = info?.querySelector('.cart-qty-controls, .cart-item-qty');
+            if (controls) controls.insertAdjacentElement('afterend', note);
             else (info || row).append(note);
           }
-          note.textContent = `O stock está limitado a ${stock} ${stock === 1 ? 'peça' : 'peças'}.`;
+          const message = `O stock está limitado a ${stock} ${stock === 1 ? 'peça' : 'peças'}.`;
+          if (note.textContent !== message) note.textContent = message;
         } else if (note) {
           note.remove();
         }
       });
     });
+
+    const totalPrice = cart.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.qty) || 0), 0);
+    const totalQuantity = cart.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
+    const totalElement = document.getElementById('cartTotalValue');
+    const cartButton = document.getElementById('cartBtn');
+    const formattedTotal = `${totalPrice.toFixed(2).replace('.', ',')}€`;
+    if (totalElement && totalElement.textContent !== formattedTotal) totalElement.textContent = formattedTotal;
+    if (cartButton) {
+      const label = `🛒 Carrinho (${totalQuantity})`;
+      if (cartButton.textContent !== label) cartButton.textContent = label;
+    }
   }
 
   function showNotice(message) {
@@ -144,11 +170,19 @@
       const stock = getStock(title);
       if (stock === null) return;
       const cart = readCart();
-      if (stock === 0) {
+      const alreadyInCart = cart.find(item => normalizeTitle(item.title) === normalizeTitle(title))?.qty || 0;
+      const requested = Math.max(1, Number(card.querySelector('.qty-input')?.value) || 1);
+      const remaining = Math.max(0, stock - alreadyInCart);
+      if (remaining === 0) {
         event.preventDefault();
         event.stopImmediatePropagation();
         showNotice('Este produto está fora de stock.');
         return;
+      }
+      if (requested > remaining) {
+        const quantityInput = card.querySelector('.qty-input');
+        if (quantityInput) quantityInput.value = remaining;
+        showNotice(`Quantidade ajustada ao stock disponível: ${remaining} unidade(s).`);
       }
     }
 
@@ -159,10 +193,10 @@
       const item = cart[index];
       if (!item) return;
       const stock = getStock(item.title);
-      if (stock === 0) {
+      if (stock !== null && Number(item.qty) >= stock) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        showNotice('Este produto está fora de stock.');
+        showNotice(`Stock máximo disponível: ${stock} unidade(s).`);
       }
     }
   }
@@ -173,13 +207,9 @@
     showStaffEntry();
     synchronizeCart();
     renderStockOnProducts();
-    document.querySelectorAll('.cart-items-container').forEach(container => {
-      new MutationObserver(renderCartStockNotes).observe(container, { childList: true, subtree: true });
-    });
-    renderCartStockNotes();
   });
   window.addEventListener('storage', event => {
-    if (event.key === stockKey) {
+    if (event.key === stockKey || event.key === cartKey) {
       synchronizeCart();
       renderStockOnProducts();
       renderCartStockNotes();
@@ -188,6 +218,13 @@
   window.addEventListener('bm-stock-change', () => {
     synchronizeCart();
     renderStockOnProducts();
+    renderCartStockNotes();
+  });
+  window.addEventListener('bm-cart-synchronized', renderCartStockNotes);
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.cart-items-container').forEach(container => {
+      new MutationObserver(renderCartStockNotes).observe(container, { childList: true, subtree: true });
+    });
     renderCartStockNotes();
   });
 })();
