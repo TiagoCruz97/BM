@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Área reservada | BM Jewerly</title>
+  <link rel="stylesheet" href="site.css">
+  <style>
+    :root { --staff-ink:#25231f; --staff-muted:#726d63; --staff-line:#e6e1d8; --staff-paper:#fffefa; --staff-bg:#f6f4ef; --staff-accent:#817047; }
+    body { margin:0; background:var(--staff-bg); color:var(--staff-ink); }
+    .staff-header { background:var(--staff-paper); border-bottom:1px solid var(--staff-line); }
+    .staff-header .header-inner { max-width:1100px; }
+    .staff-header .logo { text-decoration:none; }
+    .staff-header .logo-mark { font:700 1.5rem Georgia,serif; color:var(--staff-accent); }
+    .staff-header .logo-word { letter-spacing:.2em; }
+    .staff-main { max-width:1100px; margin:0 auto; padding:44px 24px 72px; }
+    .staff-title { margin:0; font:600 2rem Georgia,serif; }
+    .staff-subtitle { margin:8px 0 28px; color:var(--staff-muted); }
+    .staff-panel { background:var(--staff-paper); border:1px solid var(--staff-line); border-radius:8px; padding:24px; }
+    .staff-login { max-width:420px; margin:8vh auto; }
+    .staff-login h1 { margin:0 0 8px; font:600 1.7rem Georgia,serif; }
+    .staff-login p { color:var(--staff-muted); }
+    .staff-login label { display:block; margin:22px 0 8px; font-weight:600; }
+    .staff-login input, .stock-quantity { width:100%; min-height:42px; padding:9px 11px; border:1px solid var(--staff-line); border-radius:5px; background:#fff; font:inherit; }
+    .staff-button { min-height:40px; padding:9px 14px; border:1px solid var(--staff-line); border-radius:5px; background:#fff; color:var(--staff-ink); font:inherit; font-size:.9rem; font-weight:600; cursor:pointer; }
+    .staff-button:hover { border-color:var(--staff-accent); }
+    .staff-button.primary { background:var(--staff-accent); border-color:var(--staff-accent); color:white; }
+    .staff-error { min-height:1.4em; color:#9c3c34; }
+    .staff-toolbar { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:20px; }
+    .staff-toolbar h1 { margin:0; font:600 2rem Georgia,serif; }
+    .staff-tabs { display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid var(--staff-line); }
+    .staff-tab { padding:12px 15px; border:0; border-bottom:2px solid transparent; background:none; color:var(--staff-muted); font:inherit; font-size:.95rem; font-weight:600; cursor:pointer; }
+    .staff-tab[aria-selected="true"] { border-bottom-color:var(--staff-accent); color:var(--staff-ink); }
+    .staff-section h2 { margin:0 0 18px; font:600 1.3rem Georgia,serif; }
+    .staff-table-wrap { overflow-x:auto; }
+    .staff-table { width:100%; border-collapse:collapse; text-align:left; }
+    .staff-table th, .staff-table td { padding:13px 12px; border-bottom:1px solid var(--staff-line); vertical-align:middle; }
+    .staff-table th { color:var(--staff-muted); font-size:.82rem; font-weight:600; }
+    .stock-quantity { width:110px; min-height:38px; }
+    .stock-save { white-space:nowrap; }
+    .stock-state, .order-state { display:inline-block; color:var(--staff-muted); font-size:.84rem; }
+    .order-list { display:grid; gap:14px; }
+    .order-card { border:1px solid var(--staff-line); border-radius:6px; padding:18px; }
+    .order-heading { display:flex; justify-content:space-between; gap:12px; align-items:start; }
+    .order-heading h3 { margin:0; font-size:1rem; }
+    .order-meta, .order-lines { color:var(--staff-muted); font-size:.9rem; line-height:1.6; }
+    .order-lines { padding-left:18px; }
+    .order-actions { display:flex; gap:8px; margin-top:14px; }
+    .order-empty { padding:32px 0; color:var(--staff-muted); text-align:center; }
+    .staff-note { margin:18px 0 0; color:var(--staff-muted); font-size:.82rem; }
+    [hidden] { display:none !important; }
+    @media (max-width:640px) {
+      .staff-main { padding:28px 16px 54px; }
+      .staff-panel { padding:18px 14px; }
+      .staff-toolbar { align-items:flex-start; }
+      .staff-toolbar h1 { font-size:1.55rem; }
+      .staff-table th, .staff-table td { padding:10px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="staff-header">
+    <div class="header-inner">
+      <a class="logo" href="index.html" aria-label="BM Jewerly, página inicial"><span class="logo-mark">BM</span><span class="logo-word">JEWERLY</span></a>
+      <a class="back-link" href="index.html">Voltar à loja</a>
+    </div>
+  </header>
+  <main class="staff-main">
+    <section class="staff-panel staff-login" id="staffLogin">
+      <h1>Área reservada</h1>
+      <p>Acesso exclusivo à equipa.</p>
+      <form id="staffLoginForm">
+        <label for="staffPassword">Palavra-passe</label>
+        <input id="staffPassword" type="password" autocomplete="current-password" required>
+        <p class="staff-error" id="staffLoginError" role="alert"></p>
+        <button class="staff-button primary" type="submit">Entrar</button>
+      </form>
+    </section>
+    <section id="staffDashboard" hidden>
+      <div class="staff-toolbar"><h1>Gestão da loja</h1><button type="button" class="staff-button" id="staffLogout">Terminar sessão</button></div>
+      <div class="staff-tabs" role="tablist" aria-label="Gestão da loja">
+        <button type="button" class="staff-tab" id="ordersTab" role="tab" aria-selected="true" aria-controls="ordersPanel">Pedidos</button>
+        <button type="button" class="staff-tab" id="stockTab" role="tab" aria-selected="false" aria-controls="stockPanel">Stock</button>
+      </div>
+      <section class="staff-section" id="ordersPanel" role="tabpanel" aria-labelledby="ordersTab">
+        <h2>Pedidos de clientes</h2>
+        <div class="order-list" id="staffOrders"></div>
+      </section>
+      <section class="staff-section" id="stockPanel" role="tabpanel" aria-labelledby="stockTab" hidden>
+        <h2>Stock de produtos</h2>
+        <div class="staff-table-wrap"><table class="staff-table"><thead><tr><th>Produto</th><th>Quantidade</th><th>Estado</th><th></th></tr></thead><tbody id="staffStock"></tbody></table></div>
+      </section>
+      <p class="staff-note">Pedidos e stock ficam guardados neste navegador.</p>
+    </section>
+  </main>
+  <script src="inventory.js"></script>
+  <script src="staff.js"></script>
+</body>
+</html>

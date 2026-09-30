@@ -463,7 +463,6 @@
       <a href="homem.html">Homem</a>
     </nav>
     <div class="header-actions">
-      <button class="btn btn-outline" data-open-modal="modal-login">Entrar</button>
       <button class="btn btn-primary" id="cartBtn">🛒 Carrinho (0)</button>
     </div>
   </div>
@@ -745,51 +744,6 @@
 
 <!-- Modals -->
 <div class="modal-overlay" id="modalOverlay"></div>
-
-<div class="modal" id="modal-login" role="dialog" aria-modal="true" aria-labelledby="loginTitle" aria-hidden="true">
-  <div class="modal-card">
-    <button class="modal-close" data-close-modal aria-label="Fechar">×</button>
-    <h2 id="loginTitle" class="visually-hidden">Entrar ou criar conta</h2>
-    <div class="auth-tabs">
-      <button class="auth-tab is-active" data-tab="entrar" type="button">Entrar</button>
-      <button class="auth-tab" data-tab="criar" type="button">Criar Conta</button>
-    </div>
-
-    <div class="auth-panel is-active" data-panel="entrar">
-      <form id="formEntrar" novalidate>
-        <label class="field">Email
-          <input type="email" required autocomplete="email">
-        </label>
-        <label class="field">Palavra-passe
-          <input type="password" required autocomplete="current-password">
-        </label>
-        <button type="submit" class="btn btn-primary">Entrar</button>
-        <a href="#" class="auth-forgot">Esqueceste-te da password?</a>
-      </form>
-    </div>
-
-    <div class="auth-panel" data-panel="criar">
-      <p class="auth-perk">🎁 Regista-te e ganha <strong>10% de desconto</strong> na tua primeira compra</p>
-      <form id="formCriar" novalidate>
-        <label class="field">Nome
-          <input type="text" required autocomplete="name">
-        </label>
-        <label class="field">Email
-          <input type="email" required autocomplete="email">
-        </label>
-        <label class="field">Palavra-passe
-          <input type="password" required minlength="6" autocomplete="new-password">
-        </label>
-        <label class="field field-checkbox">
-          <input type="checkbox">
-          Quero receber novidades e promoções por email
-        </label>
-        <button type="submit" class="btn btn-primary">Criar Conta e Ganhar 10%</button>
-        <p class="auth-fine">Ao criar conta, concordas com os nossos Termos e Condições e Política de Privacidade. O código de 10% é enviado por email após o registo e é válido na primeira compra.</p>
-      </form>
-    </div>
-  </div>
-</div>
 
 <div class="modal" id="modal-quemsomos" role="dialog" aria-modal="true" aria-labelledby="quemsomosTitle" aria-hidden="true">
   <div class="modal-card">
@@ -1148,5 +1102,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 </script>
+<script src="inventory.js"></script>
 </body>
 </html>

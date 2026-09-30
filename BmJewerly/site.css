@@ -606,3 +606,45 @@ main.container > .product-grid .action-buttons .btn,
     gap: 10px;
   }
 }
+
+.staff-entry {
+  display: inline-grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border: 1px solid var(--border, rgba(36,31,26,.14));
+  border-radius: 50%;
+  color: var(--ink-soft, #55493c);
+  text-decoration: none;
+}
+
+.staff-entry:hover,
+.staff-entry:focus-visible {
+  border-color: var(--gold, #8a6a3a);
+  color: var(--gold, #8a6a3a);
+}
+
+.staff-entry svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.product-card .add-cart:disabled,
+.product-card .buy-now:disabled {
+  cursor: not-allowed;
+  opacity: .58;
+}
+
+.stock-status {
+  margin: 0 0 10px;
+  color: #9c3c34;
+  font-size: .9rem;
+  font-weight: 600;
+  text-align: center;
+}

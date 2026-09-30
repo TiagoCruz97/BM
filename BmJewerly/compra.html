@@ -119,11 +119,20 @@ checkoutForm.addEventListener('submit',event=>{
 	event.preventDefault();
 	renderSummary();
 	if(!cart.length||!getShipping())return;
+	const stockIssue=cart.find(item=>{const stock=window.BMJInventory?.getStock(item.title);return stock!==null&&stock!==undefined&&item.qty>stock});
+	if(stockIssue){alert(`${stockIssue.title} já não tem stock suficiente. Atualiza o carrinho antes de finalizar.`);return}
+	const formData=new FormData(checkoutForm);
+	let orders=[];
+	try{orders=JSON.parse(localStorage.getItem('bm_jewerly_orders')||'[]');if(!Array.isArray(orders))orders=[]}catch(error){orders=[]}
+	const shipping=getShipping();
+	orders.push({id:Date.now(),createdAt:new Date().toISOString(),status:'pending',customer:{name:formData.get('name'),phone:formData.get('phone'),email:formData.get('email'),address:formData.get('address'),country:formData.get('country'),postal:formData.get('postal'),city:formData.get('city'),payment:formData.get('payment')},items:cart.map(item=>({...item})),shipping:shipping.price,total:getSubtotal()+shipping.price});
+	localStorage.setItem('bm_jewerly_orders',JSON.stringify(orders));
 	localStorage.removeItem(cartKey);
 	document.getElementById('checkoutView').style.display='none';
 	document.getElementById('successView').classList.add('is-visible');
 });
 renderSummary();
 </script>
+<script src="inventory.js"></script>
 </body>
 </html>
