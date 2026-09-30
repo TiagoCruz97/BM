@@ -648,3 +648,10 @@ main.container > .product-grid .action-buttons .btn,
   font-weight: 600;
   text-align: center;
 }
+
+.cart-stock-note {
+  margin: 6px 0 0;
+  color: #9c3c34;
+  font-size: .82rem;
+  line-height: 1.35;
+}

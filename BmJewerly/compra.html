@@ -46,14 +46,15 @@
 			<h2 class="summary-title">Resumo da encomenda</h2>
 			<div id="summaryItems"></div>
 			<div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">0,00€</span></div>
-			<div class="summary-row"><span>Portes de envio</span><span id="summaryShipping">—</span></div>
-			<p class="shipping-note" id="shippingNote" aria-live="polite">Indica o país e o código postal para calcular os portes.</p>
-			<div class="summary-total"><span>Total</span><span id="summaryTotal">—</span></div>
+			<div class="summary-row"><span>Portes de envio</span><span id="summaryShipping">A confirmar pela equipa</span></div>
+			<p class="shipping-note" id="shippingNote" aria-live="polite">A equipa confirma o valor dos portes após a encomenda.</p>
+			<div class="summary-total"><span>Total após confirmação dos portes</span><span id="summaryTotal">A confirmar pela equipa</span></div>
 		</aside>
 	</div>
 </main>
 <section class="success" id="successView"><div class="success-icon">✓</div><h1 class="success-title">Encomenda registada</h1><p>Obrigado pela tua compra. Receberás os próximos passos por email. A encomenda será enviada com código de rastreio.</p><a class="back-link" href="index.html">Voltar à página principal</a></section>
 <footer class="site-footer"><div class="container footer-inner"><p class="footer-logo">BM JEWERLY</p><nav class="footer-links" aria-label="Informações da loja"><a href="index.html#contactos">Contactos</a><a href="index.html#quem-somos">Quem Somos</a><a href="index.html#envios-e-devolucoes">Envios e Devoluções</a><a href="index.html#perguntas-frequentes">Perguntas Frequentes</a></nav><p class="footer-copy">© 2026 BM Jewerly. Todos os direitos reservados.</p></div></footer>
+<script src="inventory.js"></script>
 <script>
 const cartKey='bm_jewerly_cart_final';
 let cart=[];
@@ -94,24 +95,25 @@ function renderSummary(){
 	if(!cart.length){
 		items.innerHTML='<p class="empty-message">O teu carrinho está vazio. Volta à loja para escolher os teus produtos.</p>';
 		shippingElement.textContent='—';
-		shippingNote.textContent='Indica o país e o código postal para calcular os portes.';
+		shippingNote.textContent='A equipa confirma o valor dos portes após a encomenda.';
 		total.textContent=formatPrice(0);
 		submitButton.disabled=true;
 		return;
 	}
-	items.innerHTML=cart.map(item=>`<div class="summary-item"><span>${item.title}<span class="summary-qty">Qtd: ${item.qty}</span></span><span>${formatPrice(item.price*item.qty)}</span></div>`).join('');
+	const stockExceeded=cart.some(item=>{const stock=window.BMJInventory?.getStock(item.title);return stock!==null&&stock!==undefined&&item.qty>stock});
+	items.innerHTML=cart.map(item=>{const stock=window.BMJInventory?.getStock(item.title);const stockNote=stock!==null&&stock!==undefined&&item.qty>stock?`<small class="cart-stock-note">Stock limitado a ${stock} ${stock===1?'peça':'peças'}.</small>`:'';return `<div class="summary-item"><span>${item.title}<span class="summary-qty">Qtd: ${item.qty}</span>${stockNote}</span><span>${formatPrice(item.price*item.qty)}</span></div>`}).join('');
 	const shipping=getShipping();
 	if(!shipping){
-		shippingElement.textContent='—';
-		shippingNote.textContent=countryInput.value==='PT'&&postal?'Indica um código postal português válido (ex.: 1000-001).':'Indica o país e o código postal para calcular os portes.';
-		total.textContent='—';
+		shippingElement.textContent='A confirmar pela equipa';
+		shippingNote.textContent=countryInput.value==='PT'&&postal?'Indica um código postal português válido (ex.: 1000-001).':'A equipa confirma o valor dos portes após a encomenda.';
+		total.textContent='A confirmar pela equipa';
 		submitButton.disabled=true;
 		return;
 	}
-	shippingElement.textContent=shipping.price===0?'Grátis':formatPrice(shipping.price);
+	shippingElement.textContent='A confirmar pela equipa';
 	shippingNote.textContent=shipping.note;
-	total.textContent=formatPrice(subtotal+shipping.price);
-	submitButton.disabled=false;
+	total.textContent='A confirmar pela equipa';
+	submitButton.disabled=stockExceeded;
 }
 countryInput.addEventListener('change',renderSummary);
 postalInput.addEventListener('input',renderSummary);
@@ -133,6 +135,5 @@ checkoutForm.addEventListener('submit',event=>{
 });
 renderSummary();
 </script>
-<script src="inventory.js"></script>
 </body>
 </html>
